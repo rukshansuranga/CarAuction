@@ -6,7 +6,8 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - /var/lib/postgresql/data
+      - postgress-data:/var/lib/postgresql/data
+
   mongodb:
     image: mongo
     environment:
@@ -15,20 +16,26 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - postgress-data:/data/db
+      - mongo-data:/data/db
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin4_container
-    restart: always
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
     ports:
-      - "8888:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: rukshansuranga@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: test123
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
+      - 5672:5672
+      - 15672:15672
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: pgadmin4_container
+  #   restart: always
+  #   ports:
+  #     - "8888:80"
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: rukshansuranga@gmail.com
+  #     PGADMIN_DEFAULT_PASSWORD: test123
+  #   volumes:
+  #     - pgadmin-data:/var/lib/pgadmin
 
 volumes:
   pgadmin-data:
   postgress-data:
+  mongo-data:
