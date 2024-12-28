@@ -59,7 +59,6 @@ namespace AuctionService.Controllers
         {
             var auction = _mapper.Map<Auction>(auctionDto);
 
-            //TODO: add current user as seller
             auction.Seller = User.Identity.Name;
             _context.Auctions.Add(auction);
 
