@@ -14,13 +14,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             issuer: process.env.ID_URL,
             authorization: {
                 params: { scope: 'openid profile auctionApp' },
-                url: 'http://localhost:5001/connect/authorize'
+                url: process.env.ID_URL + '/connect/authorize'
             },
             token: {
-                url: `http://localhost:5001/connect/token`
+                url: `${process.env.ID_URL_INTERNAL}/connect/token`
             },
             userinfo: {
-                url: `http://localhost:5001/connect/token`
+                url: `${process.env.ID_URL_INTERNAL}/connect/token`
             },
             idToken: true
         } as OIDCConfig<Omit<Profile, 'username'>>),

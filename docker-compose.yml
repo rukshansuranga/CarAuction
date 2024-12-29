@@ -73,9 +73,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
+      - IssuerUri=https://id.carsties.local
+      - ClientApp=https://app.carsties.local
       - ConnectionStrings__DefaultConnection=Server=postgres:5432; User Id=postgres; Password=postgrespw; Database=identity
-    ports:
-      - 5001:80
+      - VIRTUAL_HOST=id.carsties.local
     depends_on:
       - postgres
 
@@ -87,8 +88,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
-    ports:
-      - 6001:80
+      - ClientApp=https://app.carsties.local
+      - VIRTUAL_HOST=api.carsties.local
     depends_on:
       - postgres
 
@@ -123,7 +124,6 @@ services:
       - 7004:80
     depends_on:
       - rabbitmq
-
   web-app:
     image: trycatchlearn/web-app
     build:
@@ -132,12 +132,26 @@ services:
     volumes:
       - /var/lib/web/data
     environment:
-      - AUTH_SECRET="7vgUxWjehgeKTOFH2dZu0zSeKP61o9gl0b1vuHCqeMo="
-      - AUTH_URL=http://localhost:3000
+      - AUTH_SECRET="Y7MUjcdTAJdl64MGjyk06terHsLknrROZBVECan0V2U="
+      - AUTH_URL=https://app.carsties.local
+      # - NEXTAUTH_URL=http://app.carsties.local
       - AUTH_URL_INTERNAL=http://web-app:3000
       - API_URL=http://gateway-svc/
-      - ID_URL=http://localhost:5001
-      - NOTIFY_URL=http://localhost:6001/notifications
+      - ID_URL=https://id.carsties.local
+      - ID_URL_INTERNAL=http://identity-svc
+      - NOTIFY_URL=https://api.carsties.local/notifications
+      - VIRTUAL_HOST=app.carsties.local
+      - VIRTUAL_PORT=3000
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./devcerts:/etc/nginx/certs
 
 volumes:
   pgadmin-data:
